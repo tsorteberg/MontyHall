@@ -52,7 +52,9 @@ class Monty:
         Get function for trials member.
         :return: Returns an int.
         """
-        pass
+
+        # Return Statement.
+        return self._trials
 
     def run_trial(self, index):
         """
