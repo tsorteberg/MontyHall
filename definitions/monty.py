@@ -200,11 +200,15 @@ class Monty:
         Default return to string.
         :return: Returns a str.
         """
-        pass
+
+        # Return Statement.
+        return "Trials: " + str(self._trials)
 
     def __repr__(self):
         """
         Default return to string for debugging purposes.
         :return: Returns a str.
         """
-        pass
+
+        # Return Statement
+        return "Monty(" + str(self._trials) + ")"
