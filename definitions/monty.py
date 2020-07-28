@@ -177,9 +177,12 @@ class Monty:
         :return: Returns a bool.
         """
         # Define set for input validation.
-        character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
+        character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwx"
+                            "yz0123456789 ")
         # Input validation.
-        if not (character_set.issuperset(filename) and (constants.LOW <= len(filename) <= constants.LENGTH)) or isinstance(product, list):
+        if not (character_set.issuperset(filename)
+                and (constants.LOW <= len(filename) <= constants.LENGTH)) \
+                or isinstance(product, list):
             # Raises ValueError
             raise ValueError
         else:
@@ -189,7 +192,9 @@ class Monty:
         try:
             with open(filename + ".csv", 'a', newline="") as _csv_file:
                 _file_writer = csv.writer(_csv_file, delimiter=',')
-                _file_writer.writerow([product[0], product[1], product[2], product[3][0], product[3][1], product[3][2], product[3][3]])
+                _file_writer.writerow([product[0], product[1], product[2],
+                                       product[3][0], product[3][1],
+                                       product[3][2], product[3][3]])
         except FileExistsError:
             # Bypass exception to continue program execution.
             pass

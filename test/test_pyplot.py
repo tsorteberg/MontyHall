@@ -23,8 +23,8 @@ class MyTestCase(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
-#                             Test Case Coverage: Unit Test                          #
-#          Input                    Expected Output            Actual Output         #
-#        "notfound"                      False                     False             #
-#           "!"                          False                     False             #
+#                      Test Case Coverage: Unit Test                          #
+#          Input             Expected Output            Actual Output         #
+#        "notfound"               False                     False             #
+#           "!"                   False                     False             #
 

@@ -19,9 +19,11 @@ def check_csv(filename):
     :return: Returns a bool.
     """
     # Define set for input validation.
-    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
+    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01"
+                        "23456789 ")
     # Input validation.
-    if not (character_set.issuperset(filename) and (constants.LOW <= len(filename) <= constants.LENGTH)):
+    if not (character_set.issuperset(filename)
+            and (constants.LOW <= len(filename) <= constants.LENGTH)):
         # Raises ValueError.
         raise ValueError
     else:
@@ -66,9 +68,12 @@ def create_tables(filename):
     :return: Returns a bool
     """
     # Define set for input validation.
-    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
+    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01"
+                        "23456789 ")
     # Input Validation.
-    if not (character_set.issuperset(filename) and (constants.LOW <= len(filename) <= constants.LENGTH)):
+    if not (character_set.issuperset(filename)
+            and (constants.LOW <= len(filename) <= constants.LENGTH)):
+        # Raises ValueError
         raise ValueError
     else:
         # Initiate connection to database and define cursor.
@@ -111,4 +116,33 @@ def export_database(filename, row, cur):
     :param cur: Required: cursor object.
     :return: Returns a bool.
     """
-    pass
+    # Define set for input validation.
+    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01"
+                        "23456789 ")
+    # Input Validation.
+    if not (character_set.issuperset(filename)
+            and (constants.LOW <= len(filename) <= constants.LENGTH)) \
+            or not isinstance(row, list) or not isinstance(cur, sqlite3.Cursor):
+        # Raises ValueError
+        raise ValueError
+    else:
+        # Set return variable bool under fail assumption.
+        _success = False
+        # Attempt to import line from csv file into database.
+        try:
+            to_db = (row[0], row[1], row[2], row[3], row[4], row[5], row[6])
+            # print(to_db)
+            cur.execute(
+                "INSERT INTO " +
+                "'" + filename +
+                "'" + "(id, time, results, correctNoSwitch, correctSwitch, "
+                      "incorrectNoSwitch, incorrectSwitch) "
+                      "VALUES (?, ?, ?, ?, ?, ?, ?);", to_db)
+        except sqlite3.IntegrityError:
+            # Raises IntegrityError.
+            raise sqlite3.IntegrityError
+        else:
+            # If import is successful, return True.
+            _success = True
+        # If import fails, return default value.
+        return _success

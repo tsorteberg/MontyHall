@@ -8,8 +8,6 @@ The purpose of this program is to perform unit testing for the database module.
 import unittest
 from modules import database
 import sqlite3
-from sqlite3 import Error
-import datetime
 
 
 class MyTestCase(unittest.TestCase):
@@ -39,17 +37,44 @@ class MyTestCase(unittest.TestCase):
             self.assertEqual(database.export_database("!", "abc", -15), False)
 
     def test08_data_export_database(self):
+        # Open connection to database.
         conn = sqlite3.connect("backup.db")
+        # Define cursor.
         cur = conn.cursor()
-        self.assertEqual(database.export_database("test", ['1', '2020-07-28 11:16:24.104852', "{'Correct': 2, 'Choice': 2, 'Reveal': 3, 'Switch': 1}", '0', '0', '0', '1'], cur), True)
+        self.assertEqual(database.export_database(
+            "test", ['1', '2020-07-28 11:16:24.104852', "{'Correct': 2, "
+                                                        "'Choice': 2, "
+                                                        "'Reveal': 3, "
+                                                        "'Switch': 1} ",
+                     '0', '0', '0', '1'], cur),
+            True)
+        # Commit changes to database.
         conn.commit()
+        # Close database connection.
         conn.close()
 
-    def test_09duplicate_data_export_database(self):
+    def test_09_duplicate_data_export_database(self):
         with self.assertRaises(sqlite3.IntegrityError):
-            self.assertEqual(database.export_database("test", (['1', '2020-07-28 11:16:24.104852', "{'Correct': 2, 'Choice': 2, 'Reveal': 3, 'Switch': 1}", '0', '0', '0', '1']), sqlite3.connect("backup.db").cursor()), False)
+            self.assertEqual(database.export_database(
+                "test", ['1', '2020-07-28 11:16:24.104852', "{'Correct': 2, "
+                                                            "'Choice': 2, "
+                                                            "'Reveal': 3, "
+                                                            "'Switch': 1} ",
+                         '0', '0', '0', '1'],
+                sqlite3.connect("backup.db").cursor()), False)
 
 
 if __name__ == '__main__':
     unittest.main()
 
+#                      Test Case Coverage: Unit Test                          #
+#          Input             Expected Output            Actual Output         #
+#          "!"                    False                     False             #
+#         "temp"                  False                     False             #
+#         "test"                  True                      True              #
+#           ()                    True                      True              #
+#          "!"                    False                     False             #
+#         "test"                  True                      True              #
+#          -15                    False                     False             #
+#       Valid Data                True                      True              #
+#       Duplicate Data            False                     False             #
