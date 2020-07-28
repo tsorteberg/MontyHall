@@ -78,3 +78,19 @@ class MyTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+#                             Test Case Coverage: Unit Test                          #
+#          Input                    Expected Output            Actual Output         #
+#          "abc"                       Exception                  Exception          #
+#           -15                        Exception                  Exception          #
+#          "abc"                       Exception                  Exception          #
+#           -15                        Exception                  Exception          #
+#          10000                         10000                      10000            #
+#          "test"                        False                      False            #
+#           "!"                        ValueError                 ValueError         #
+#          "abc"                       ValueError                 ValueError         #
+#           -15                        ValueError                 ValueError         #
+#            1                            Pass                       Pass            #
+#        "abc", "!"                    ValueError                 ValueError         #
+#           ()                           __str__                    __str__          #
+#           ()                           __rpr__                    __rpr__          #
