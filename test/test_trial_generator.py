@@ -34,11 +34,11 @@ class MyTestCase(unittest.TestCase):
 
     def test06_validate_filename_set(self):
         with self.assertRaises(NameError):
-            self.assertEqual(False, trial_generator.validate_trials("!"))
+            self.assertEqual(False, trial_generator.validate_filename("!"))
 
     def test07_validate_filename_range(self):
         with self.assertRaises(NameError):
-            self.assertEqual(False, trial_generator.validate_trials("Lorem ipsum "
+            self.assertEqual(False, trial_generator.validate_filename("Lorem ipsum "
                                                                     "dolor sit am"
                                                                     "et, consecte"
                                                                     "tur adipisci"
