@@ -10,8 +10,12 @@ the user can view a graph or backup the data to database.
 """
 from tkinter import *
 from constants import constants
+from definitions import monty
+from modules import pyplot, database
 import threading
 import subprocess
+import csv
+import sqlite3
 
 
 def validate_trials(trials):
@@ -26,12 +30,15 @@ def validate_trials(trials):
     trials = trials.replace(',', '')
     # Input validation.
     if not trials:
-        label_status.config(text="ERROR: Number of trials cannot be blank.", fg="red")
+        label_status.config(text="ERROR: Number of trials cannot be blank.",
+                            fg="red")
         # Return statement.
         return False
-    elif not (trials and number_set.issuperset(trials) and isinstance(trials, str) and (
-            constants.LOW <= int(trials) <= constants.HIGH)):
-        label_status.config(text="ERROR: Number of trials must be between 1-1,000,000.", fg="red")
+    elif not (trials and number_set.issuperset(trials)
+              and isinstance(trials, str)
+              and (constants.LOW <= int(trials) <= constants.HIGH)):
+        label_status.config(text="ERROR: Number of trials must be between 1-1,000,000.",
+                            fg="red")
         # Return statement.
         return False
     else:
@@ -46,18 +53,22 @@ def validate_filename(filename):
     :return: Returns a bool.
     """
     # Define set for input validation.
-    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
+    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01"
+                        "23456789 ")
     # Input validation.
     if not filename:
-        label_status.config(text="ERROR: The export file name cannot be blank.", fg="red")
+        label_status.config(text="ERROR: The export file name cannot be blank.",
+                            fg="red")
         # Return statement.
         return False
     elif not character_set.issuperset(filename):
-        label_status.config(text="ERROR: Export file names must be alpha-numeric.", fg="red")
+        label_status.config(text="ERROR: Export file names must be alpha-numeric.",
+                            fg="red")
         # Return statement.
         return False
     elif len(filename) > constants.LENGTH:
-        label_status.config(text="ERROR: File length cannot exceed 259 characters.", fg="red")
+        label_status.config(text="ERROR: File length cannot exceed 259 characters.",
+                            fg="red")
         # Return statement.
         return False
     else:
@@ -72,7 +83,70 @@ def create_objects(trials, filename):
     :param filename: Required: str.
     :return: Returns a bool.
     """
-    pass
+    trials = trials.replace(',', '')
+    # Input Validation for trials parameter.
+    if validate_trials(trials) and validate_filename(filename):
+
+        # Cast str trials parameter to int.
+        _trial_int = int(trials)
+        # Instantiate Monty object.
+        _trials = monty.Monty(_trial_int)
+        # Function call to create csv file.
+        _message = _trials.create_csv(filename)
+        # Set return variable bool under fail assumption.
+        _success = False
+        # Execute trials and export to csv.
+        if _message:
+
+            # Disable buttons until complete.
+            run_button.config(state="disabled")
+            graph_button.config(state="disabled")
+            backup_button.config(state="disabled")
+            help_button.config(state="disabled")
+            exit_button.config(state="disabled")
+            input_trials.config(state="disabled")
+            input_file.config(state="disabled")
+
+            # Function call for run_trials.
+            # Set index to zero.
+            _index = 0
+            # For loop to execute trials.
+            for x in range(_trial_int):
+                # Set unique identifier.
+                _index += 1
+                # Temp variable used to export to csv.
+                _temp = _trials.run_trial(_index)
+                # Export to csv.
+                _trials.export_csv(_temp, filename)
+                # Calculate progress.
+                _progress = (_index / _trial_int) * 100
+                # Update label displaying progress.
+                label_status.config(text="Processing trials: "
+                                         + '{0:.2f}'.format(_progress)
+                                         + " %", fg="black")
+            # Update label upon completion.
+            label_status.config(text=str("{:,}".format(_trial_int))
+                                + " trials processed successfully.")
+            # If successful, return True.
+            _success = True
+
+            # Enable buttons after completion.
+            run_button.config(state="active")
+            graph_button.config(state="active")
+            backup_button.config(state="active")
+            help_button.config(state="active")
+            exit_button.config(state="active")
+            input_trials.config(state="normal")
+            input_file.config(state="normal")
+
+        else:
+            # If file exists, update status label.
+            label_status.config(text="ERROR: The file already exists.",
+                                fg="red")
+
+        # Return statement.
+        return _success
+
 
 def graph(filename):
     """
@@ -80,7 +154,18 @@ def graph(filename):
     :param filename: Required: str.
     :return: No return.
     """
-    pass
+    # Input validation.
+    if validate_filename(filename):
+        # Function call to generate plot.
+        test = pyplot.pyplot(filename)
+        if test:
+            # Bypass exception to continue program execution.
+            pass
+        else:
+            # If fail, update statud label.
+            label_status.config(text="ERROR: The file does not exist.",
+                                fg="red")
+
 
 def create_backup(filename):
     """
@@ -88,10 +173,96 @@ def create_backup(filename):
     :param filename: Required: str.
     :return: Returns a bool.
     """
-    pass
+    # Input Validation.
+    if not validate_filename(filename):
+        pass
+    elif not database.check_csv(filename):
+        label_status.config(text="The import csv file '" + filename + "' cannot be found", fg="red")
+    elif not database.connect_database():
+        label_status.config(text="ERROR: Unable to connect to database.", fg="red")
+    elif not database.create_tables(filename):
+        label_status.config(text="Unable to create table.", fg="red")
+    else:
+
+        # Disable buttons until complete.
+        run_button.config(state="disabled")
+        graph_button.config(state="disabled")
+        backup_button.config(state="disabled")
+        help_button.config(state="disabled")
+        exit_button.config(state="disabled")
+        input_trials.config(state="disabled")
+        input_file.config(state="disabled")
+
+        # Count rows in csv file.
+        with open(filename + ".csv", 'r') as file:
+            reader = csv.reader(file)
+            lines = len(list(reader))
+
+        # Import csv file to database.
+        with open(filename + '.csv', 'r') as read_obj:
+            # Open csv file for import.
+            csv_reader = csv.reader(read_obj)
+            # Open database connection.
+            conn = sqlite3.connect("backup.db")
+            # Define cursor.
+            cur = conn.cursor()
+            try:
+                # Set return variable bool under fail assumption.
+                _success = False
+                # Define index.
+                _index = 0
+                # For loop for database backup.
+                for row in csv_reader:
+                    # Increment index.
+                    _index += 1
+                    # Method call to insert record into database.
+                    database.export_database(filename, row, cur)
+                    # Calculate progress.
+                    _progress = (_index / lines) * 100
+                    # Update label displaying progress.
+                    label_status.config(text="Processing Backup: " + '{0:.2f}'.format(_progress) + " %",
+                                        fg="black")
+            except sqlite3.IntegrityError:
+                # Bypass exception to continue program execution.
+                pass
+            else:
+                # If backup is successful, return True.
+                _success = True
+
+        if _success:
+            # Update status label.
+            label_status.config(text="Data backup successful.")
+        else:
+            # Update status label.
+            label_status.config(text="ERROR: Duplicate data found; backup aborted.", fg="red")
+
+    # Enable buttons after completion.
+    run_button.config(state="active")
+    graph_button.config(state="active")
+    backup_button.config(state="active")
+    help_button.config(state="active")
+    exit_button.config(state="active")
+    input_trials.config(state="normal")
+    input_file.config(state="normal")
+
+    # Commit changes to database.
+    conn.commit()
+    # Close database connection.
+    conn.close()
+
+    # Return statement.
+    return _success
+
 
 def exit_app():
-    pass
+    """
+    Function for application exit.
+    :return: Return not possible.
+    """
+    # Destroy Window.
+    window.destroy()
+    # Force termination of application.
+    sys.exit()
 
 
 # Driver code.
@@ -154,3 +325,9 @@ if __name__ == '__main__':
 
     # Loop for GUI input.
     window.mainloop()
+
+#                      Test Case Coverage: Unit Test                          #
+#          Input             Expected Output            Actual Output         #
+#       Run:10000,"test"         Success                    Success           #
+#     Graph:10000,"test"         Success                    Success           #
+#    Backup:10000,"test"         Success                    Success           #
