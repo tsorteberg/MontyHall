@@ -18,9 +18,6 @@ class MyTestCase(unittest.TestCase):
     def tearDown(self):
         del self.monty
 
-    def test_valid_get_trials(self):
-        self.assertEqual(self.monty.get_trials(), 10000)
-
     def test_exception_constructor_invalid_type(self):
         with self.assertRaises(Exception):
             self.game = monty.Monty("abc")
@@ -36,6 +33,9 @@ class MyTestCase(unittest.TestCase):
     def test_invalid_set_trials_range(self):
         with self.assertRaises(Exception):
             self.monty.set_trials(-15)
+
+    def test_valid_get_trials(self):
+        self.assertEqual(self.monty.get_trials(), 10000)
 
     def test_create_csv_file_exists(self):
         self.assertEqual(self.monty.create_csv("test"), False)

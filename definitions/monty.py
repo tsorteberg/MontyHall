@@ -34,7 +34,18 @@ class Monty:
         :param trials: Required: Set as private int.
         :return: No return for set function.
         """
-        pass
+        # Strip input of commas.
+        trials = trials.replace(',', '')
+        # Input Validation.
+        if not isinstance(trials, int):
+            raise Exception
+        elif not constants.LOW <= trials <= constants.HIGH:
+            raise Exception
+        else:
+            self._trials = trials
+
+        # Return Statement.
+        return None
 
     def get_trials(self):
         """
