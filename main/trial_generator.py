@@ -20,16 +20,22 @@ def validate_trials(trials):
     :param trials: Required: str.
     :return: Returns a bool.
     """
+    # Define set for input validation.
     number_set = set("0123456789")
+    # Strip input of commas.
     trials = trials.replace(',', '')
+    # Input validation.
     if not trials:
         label_status.config(text="ERROR: Number of trials cannot be blank.", fg="red")
+        # Return statement.
         return False
     elif not (trials and number_set.issuperset(trials) and isinstance(trials, str) and (
             constants.LOW <= int(trials) <= constants.HIGH)):
         label_status.config(text="ERROR: Number of trials must be between 1-1,000,000.", fg="red")
+        # Return statement.
         return False
     else:
+        # Return statement.
         return True
 
 
@@ -39,7 +45,24 @@ def validate_filename(filename):
     :param filename: Required: str.
     :return: Returns a bool.
     """
-    pass
+    # Define set for input validation.
+    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
+    # Input validation.
+    if not filename:
+        label_status.config(text="ERROR: The export file name cannot be blank.", fg="red")
+        # Return statement.
+        return False
+    elif not character_set.issuperset(filename):
+        label_status.config(text="ERROR: Export file names must be alpha-numeric.", fg="red")
+        # Return statement.
+        return False
+    elif len(filename) > constants.LENGTH:
+        label_status.config(text="ERROR: File length cannot exceed 259 characters.", fg="red")
+        # Return statement.
+        return False
+    else:
+        # Return statement.
+        return True
 
 
 def create_objects(trials, filename):

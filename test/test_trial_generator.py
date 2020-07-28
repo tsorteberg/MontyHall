@@ -65,3 +65,13 @@ class MyTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+#                      Test Case Coverage: Unit Test                          #
+#          Input             Expected Output            Actual Output         #
+#           ""                    False                     False             #
+#          "abc"                  False                     False             #
+#          -15                    False                     False             #
+#          -15                    False                     False             #
+#           ""                    False                     False             #
+#           "!"                   False                     False             #
+#       Lorem Ipsum               False                     False             #
