@@ -44,7 +44,7 @@ def connect_database():
     Function to create database connection.
     :return: Returns a bool.
     """
-    # Set return variable bool under fail assumption
+    # Set return variable bool under fail assumption.
     _success = False
     # Attempt to connect to database.
     try:
@@ -65,7 +65,42 @@ def create_tables(filename):
     :param filename: Required: str.
     :return: Returns a bool
     """
-    pass
+    # Define set for input validation.
+    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
+    # Input Validation.
+    if not (character_set.issuperset(filename) and (constants.LOW <= len(filename) <= constants.LENGTH)):
+        raise ValueError
+    else:
+        # Initiate connection to database and define cursor.
+        conn = sqlite3.connect("backup.db")
+        cur = conn.cursor()
+
+        # Variable declaration for sql statements.
+        sql_table = ("CREATE TABLE IF NOT EXISTS " + "'" + filename + "'"
+                     + "(id text PRIMARY KEY,"
+                       " time text NOT NULL,"
+                       " results text NOT NULL,"
+                       " correctNoSwitch text NOT NULL, "
+                       " correctSwitch text NOT NULL, "
+                       " incorrectNoSwitch text NOT NULL,"
+                       " incorrectSwitch text NOT NULL);")
+        # Set return variable bool under fail assumption.
+        _success = False
+        # Attempt to create table.
+        if conn is not None:
+            try:
+                cur.execute(sql_table)
+            except Error:
+                # Bypass exception to continue program execution.
+                pass
+            else:
+                # If table creation is successful, return True.
+                _success = True
+        else:
+            # If table creation fails, return default value.
+            return _success
+        # If table creation fails, return default value.
+        return _success
 
 
 def export_database(filename, row, cur):
