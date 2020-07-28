@@ -8,6 +8,8 @@ trial data to an SqlLite database.  The input is provided by the calling
 function; the functions return a boolean value.
 """
 from constants import constants
+import sqlite3
+from sqlite3 import Error
 
 
 def check_csv(filename):
@@ -42,7 +44,19 @@ def connect_database():
     Function to create database connection.
     :return: Returns a bool.
     """
-    pass
+    # Set return variable bool under fail assumption
+    _success = False
+    # Attempt to connect to database.
+    try:
+        sqlite3.connect("backup.db")
+    except Error:
+        # Bypass exception to continue program execution.
+        pass
+    else:
+        # If database connection successful, return True.
+        _success = True
+    # If database connection fails, return default value.
+    return _success
 
 
 def create_tables(filename):
