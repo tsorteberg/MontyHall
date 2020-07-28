@@ -47,6 +47,35 @@ class Monty:
         # Return Statement.
         return None
 
+    def create_csv(self, filename):
+        """
+        Function to create csv file for export.
+        :param filename: Required: str.
+        :return: Returns a bool.
+        """
+        # Define set for input validation.
+        character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
+        # Input Validation.
+        if not (character_set.issuperset(filename) and (constants.LOW <= len(filename) <= constants.LENGTH)):
+            # Raises ValueError.
+            raise ValueError
+        else:
+            # Set return variable bool under fail assumption.
+            _success = False
+            # Attempt to create csv file.
+            try:
+                _create_file = open(filename + ".csv", 'x')
+            except FileExistsError:
+                # Bypass exception to continue program execution.
+                pass
+            else:
+                # If file creation is successful, return true.
+                _success = True
+
+            # Return Statement.
+            # If file create fails, return default value.
+            return _success
+
     def get_trials(self):
         """
         Get function for trials member.
@@ -61,14 +90,6 @@ class Monty:
         Function to perform single trial.
         :param index: Required: int.
         :return: Returns a tuple.
-        """
-        pass
-
-    def create_csv(self, filename):
-        """
-        Function to create csv file for export.
-        :param filename: Required: str.
-        :return: Returns a bool.
         """
         pass
 
