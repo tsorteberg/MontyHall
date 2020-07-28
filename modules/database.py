@@ -7,6 +7,8 @@ The purpose of this module is to provide a means to backup collected
 trial data to an SqlLite database.  The input is provided by the calling
 function; the functions return a boolean value.
 """
+from constants import constants
+
 
 def check_csv(filename):
     """
@@ -14,7 +16,26 @@ def check_csv(filename):
     :param filename: Required: str.
     :return: Returns a bool.
     """
-    pass
+    # Define set for input validation.
+    character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
+    # Input validation.
+    if not (character_set.issuperset(filename) and (constants.LOW <= len(filename) <= constants.LENGTH)):
+        # Raises ValueError.
+        raise ValueError
+    else:
+        # Set return variable bool under fail assumption.
+        _success = False
+        try:
+            open(filename + ".csv", 'r')
+        except FileNotFoundError:
+            # Bypass exception to continue program execution.
+            pass
+        else:
+            # If csv file is located, return True.
+            _success = True
+        # If file not found, return default value.
+        return _success
+
 
 def connect_database():
     """
@@ -23,6 +44,7 @@ def connect_database():
     """
     pass
 
+
 def create_tables(filename):
     """
     Function to create a table of member filename.
@@ -30,6 +52,7 @@ def create_tables(filename):
     :return: Returns a bool
     """
     pass
+
 
 def export_database(filename, row, cur):
     """

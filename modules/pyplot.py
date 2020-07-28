@@ -23,6 +23,7 @@ def pyplot(filename):
     character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
     # Input validation.
     if not (character_set.issuperset(filename) and (constants.LOW <= len(filename) <= constants.LENGTH)):
+        # Raises ValueError
         raise ValueError
     else:
         # Variable declaration and initialization.
@@ -48,7 +49,7 @@ def pyplot(filename):
             # Bypass exception to continue program execution.
             pass
         else:
-            # Return statement.
+            # If csv file is located, return True.
             _success = True
 
         # Generate bar chart.
@@ -76,6 +77,6 @@ def pyplot(filename):
             # Generate Plot.
             plt.show()
 
-        # Return statement.
+        # If file not found, return default value.
         else:
             return _success

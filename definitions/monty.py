@@ -24,8 +24,10 @@ class Monty:
         """
         # Input Validation.
         if not isinstance(trials, int):
+            # Raises Exception.
             raise Exception
         elif not constants.LOW <= trials <= constants.HIGH:
+            # Raises Exception.
             raise Exception
         else:
             # Set trials member.
@@ -41,8 +43,10 @@ class Monty:
         trials = trials.replace(',', '')
         # Input Validation.
         if not isinstance(trials, int):
+            # Raises Exception.
             raise Exception
         elif not constants.LOW <= trials <= constants.HIGH:
+            # Raises Exception.
             raise Exception
         else:
             self._trials = trials
@@ -99,6 +103,7 @@ class Monty:
         # Input Validation.
         if not (isinstance(index, int)
                 and (constants.LOW <= int(index) <= constants.HIGH)):
+            # Raises ValueError.
             raise ValueError
         else:
             # Declare and initialize variables.
@@ -175,6 +180,7 @@ class Monty:
         character_set = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ")
         # Input validation.
         if not (character_set.issuperset(filename) and (constants.LOW <= len(filename) <= constants.LENGTH)) or isinstance(product, list):
+            # Raises ValueError
             raise ValueError
         else:
             # Set return variable bool under fail assumption.
