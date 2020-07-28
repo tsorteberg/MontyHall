@@ -8,7 +8,7 @@ which will have a int member called trial, and several methods used
 to solve the Monty Hall Problem.  The input is provided via a parameter
 passed from the calling function; returns a str, int, or bool.
 """
-
+from constants import constants
 """Class Monty"""
 
 
@@ -19,7 +19,14 @@ class Monty:
         Default constructor.
         :param trials: Required: int
         """
-        pass
+        # Input Validation.
+        if not isinstance(trials, int):
+            raise Exception
+        elif not constants.LOW <= trials <= constants.HIGH:
+            raise Exception
+        else:
+            # Set trials member.
+            self._trials = trials
 
     def set_trials(self, trials):
         """
